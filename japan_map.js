@@ -39,17 +39,30 @@ var map_w = 550,
 // json
 d3.json('./japan.topojson', function(data){
   // features
-  var features = topojson.feature(data, data.objects.japan);
-
+  var features = topojson.feature(data, data.objects.japan).features;
   // create map
-  map_svg.append('path')
-    .datum(features)
+  map_svg.selectAll('path')
+    .data(features)
+    .enter()
+    .append('path')
+    //.datum(features)
     .attr({
       'stroke': 'black',
       'stroke-width': '0.5',
-      'd': path
+      'd': path,
+      'class': function(d, i){
+        return 'state' + i;
+      },
+      'fill': '#669966'
     })
-    .style('fill', '#669966');
+    .on('mouseover', function(){
+      d3.select(this)
+        .attr('fill', 'red');
+    })
+    .on('mouseout', function(){
+      d3.select(this)
+        .attr('fill', '#669966');
+    });
 
   // csv
   d3.csv('./Population.csv', function(data){
@@ -96,6 +109,14 @@ d3.json('./japan.topojson', function(data){
       .domain([0, d3.max(p_array)])
       .range([0, bar_h]);
 
+    //var circle = map_svg.selectAll('circle').data(data);
+    //circle.enter().insert('path')
+    //  .attr({
+    //    'd': path
+    //  })
+    //  .on('mouseover', function(){
+    //    console.log('mouse');
+    //  });
     map_svg.selectAll('circle')
       .data(data)
       .enter()
@@ -116,6 +137,7 @@ d3.json('./japan.topojson', function(data){
         'opacity': 0.5
       });
 
+    
     bar_svg.selectAll('rect')
       .data(p_array)
       .enter()
@@ -140,3 +162,5 @@ d3.json('./japan.topojson', function(data){
       });
   });
 });
+
+//test
