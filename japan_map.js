@@ -101,7 +101,7 @@ d3.json('./japan.topojson', function(data){
       .on('mouseover', function(d){
         var state_local = d.properties.name_local,
             state = d.properties.name,
-            len = data.length - 1,
+            len = data.length,
             circle_data,
             i;
 
