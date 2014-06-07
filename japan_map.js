@@ -135,6 +135,9 @@ d3.json('./japan.topojson', function(data){
           .node()
           .remove();
 
+        if(d.properties.name === 'Hyōgo'){
+          d.properties.name = 'Hyogo';
+        }
         bar_svg.select('.' + d.properties.name + '_bar')
           .attr({
             'fill': 'rgb(0, 50, 100)'
