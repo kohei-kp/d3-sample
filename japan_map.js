@@ -7,6 +7,10 @@ var map_w = 550,
 //sort flg
     sort_flg = false,
 
+// scale
+    xScale,
+    yScale,
+
 // projection
     projection = d3.geo.mercator()
       .center([139.5, 35.7])
@@ -37,7 +41,7 @@ var map_w = 550,
       });
 
 // json
-d3.json('./japan.topojson', function(data){
+d3.json('./japan.topojson', function (data) {
   // features
   var features = topojson.feature(data, data.objects.japan).features;
   // create map
@@ -49,48 +53,46 @@ d3.json('./japan.topojson', function(data){
       'stroke': 'black',
       'stroke-width': '0.5',
       'd': path,
-      'class': function(d, i){
+      'class': function (d, i) {
         return d.properties.name;
       },
       'fill': '#669966'
     });
 
   // csv
-  d3.csv('./Population.csv', function(data){
+  d3.csv('./Population.csv', function (data) {
     var i = 0,
         len = data.length,
-        xScale,
-        yScale,
         p_obj = {},
         ary1 = [],
         ary2 = [],
-        switchSort = function(){
+        switchSort = function () {
           // switching flg
           sort_flg = !sort_flg;
 
           bar_svg.selectAll('rect')
-            .sort(function(a, b){
-              if(sort_flg){
+            .sort(function (a, b) {
+              if (sort_flg) {
                 // Asc
                 return d3.ascending(a, b);
-              }else{
+              } else {
                 // Desc
                 return d3.descending(a, b);
               }
             })
             .transition()
-            .delay(function(d, i){
+            .delay(function (d, i) {
               return i * 30;
             })
             .duration(900)
             .attr({
-              'x': function(d, i){
+              'x': function (d, i) {
                 return xScale(i);
               }
             });
         }
 
-    for(i = 0; i < len; i += 1){
+    for (i = 0; i < len; i += 1) {
       ary1.push(parseInt(data[i].Population));
       ary2.push(data[i].StateEn);
     }
@@ -98,7 +100,7 @@ d3.json('./japan.topojson', function(data){
     p_obj.State_en = ary2;
 
     map_svg.selectAll('path')
-      .on('mouseover', function(d){
+      .on('mouseover', function (d) {
         var state_local = d.properties.name_local,
             state = d.properties.name,
             len = data.length,
@@ -106,8 +108,8 @@ d3.json('./japan.topojson', function(data){
             i;
 
         i = len;
-        while(i--){
-          if(state_local === data[i].State){
+        while (i--) {
+          if (state_local === data[i].State) {
             circle_data = data[i];
             break;
           }
@@ -118,24 +120,28 @@ d3.json('./japan.topojson', function(data){
             'cy': projection([circle_data.Lon, circle_data.Lat])[1],
             'r': Math.sqrt(parseInt(circle_data.Population) * 0.00004),
             'class': state,
-            'fill': 'orange',
+            'fill': 'red',
             'opacity': 0.7,
           })
           .transition()
           .delay(100)
-          .duration(900);
+          .duration(900)
+          .attr({
+            'fill': 'orange',
+            'opacity': 0.7
+          });
 
         bar_svg.select('.' + d.properties.name + '_bar')
           .attr({
             'fill': 'orange'
           });
       })
-      .on('mouseout', function(d){
+      .on('mouseout', function (d) {
         map_svg.selectAll('circle')
           .node()
           .remove();
 
-        if(d.properties.name === 'Hyōgo'){
+        if (d.properties.name === 'Hyōgo') {
           d.properties.name = 'Hyogo';
         }
         bar_svg.select('.' + d.properties.name + '_bar')
@@ -157,25 +163,42 @@ d3.json('./japan.topojson', function(data){
       .enter()
       .append('rect')
       .attr({
-        'x': function(d, i){
+        'x': function (d, i) {
           return xScale(i);
         },
-        'y': function(d){
+        'y': function (d) {
           return bar_h - yScale(d);
         },
         'width': xScale.rangeBand(),
-        'height': function(d){
+        'height': function (d) {
           return yScale(d);
         },
-        'fill': function(d){
+        'fill': function (d) {
           return 'rgb(0, 50, 100)';
         },
-        'class': function(d, i){
+        'class': function (d, i) {
           return p_obj.State_en[i] + '_bar';
         }
       })
-      .on('click', function(){
+      .on('click', function () {
         switchSort();
       });
   });
 });
+
+var shuffle = function () {
+  bar_svg.selectAll('rect')
+    .sort(function (d) {
+      return d3.shuffle(d);
+    })
+    .transition()
+    .delay(function(d, i){
+      return i * 30;
+    })
+    .duration(900)
+    .attr({
+      'x': function (d, i) {
+        return xScale(i);
+      }
+    });
+};
