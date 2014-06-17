@@ -41,7 +41,7 @@ var map_w = 550,
       });
 
 // json
-d3.json('./japan.topojson', function (data) {
+d3.json('../json/japan.topojson', function (data) {
   // features
   var features = topojson.feature(data, data.objects.japan).features;
   // create map
@@ -60,7 +60,7 @@ d3.json('./japan.topojson', function (data) {
     });
 
   // csv
-  d3.csv('./Population.csv', function (data) {
+  d3.csv('../Population.csv', function (data) {
     var i = 0,
         len = data.length,
         p_obj = {},
