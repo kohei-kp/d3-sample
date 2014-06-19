@@ -8,7 +8,7 @@ var w = 500,
   projection = d3.geo.orthographic()
     .scale(200)
     .translate([w / 2, h /2])
-    .clipAngle(180)
+    .clipAngle(90)
     .rotate([x, y, z]),
 
 // path
