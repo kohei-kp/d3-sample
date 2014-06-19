@@ -22,10 +22,10 @@ var earth,
 
 svg.append('circle')
     .attr({
-      cx: w / 2,
-      cy: h / 2,
-      r: 200,
-      fill: '#333399'
+      'cx': w / 2,
+      'cy': h / 2,
+      'r': 200,
+      'fill': '#333399'
     });
 
 d3.json('../json/world.topojson', function(data) {
