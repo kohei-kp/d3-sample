@@ -1,9 +1,11 @@
 var earth,
     w = 500,
     h = 500,
+    scale = 200,
+
 // projection
     projection = d3.geo.orthographic()
-      .scale(200)
+      .scale(scale)
       .translate([w /2, h / 2])
       .clipAngle(90),
 
@@ -20,13 +22,13 @@ var earth,
       })
       .on('mousedown', mousedown);
 
-svg.append('circle')
-    .attr({
-      'cx': w / 2,
-      'cy': h / 2,
-      'r': 200,
-      'fill': '#333399'
-    });
+//svg.append('circle')
+//    .attr({
+//      'cx': w / 2,
+//      'cy': h / 2,
+//      'r': 200,
+//      'fill': '#333399'
+//    });
 
 // zoom
 var zoom = d3.behavior.zoom()
