@@ -28,8 +28,17 @@ svg.append('circle')
       'fill': '#333399'
     });
 
-d3.json('../json/world.topojson', function(data) {
-  var features = topojson.feature(data, data.objects.world).features;
+// zoom
+var zoom = d3.behavior.zoom()
+  .on('zoom', function () {
+    projection.scale(scale * d3.event.scale);
+
+    earth.attr('d', path);
+  });
+svg.call(zoom);
+
+d3.json('../json/world110.topojson', function(data) {
+  var features = topojson.feature(data, data.objects.world110).features;
 
   earth = svg.selectAll('path')
     .data(features)
