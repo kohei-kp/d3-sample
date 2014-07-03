@@ -30,8 +30,8 @@ var w = 500,
       fill: '#333399'
     });
 
-d3.json('../json/world.topojson', function (data) {
-  var features = topojson.feature(data, data.objects.world).features;
+d3.json('../json/world110.topojson', function (data) {
+  var features = topojson.feature(data, data.objects.world110).features;
 
   var earth = svg.selectAll('path')
     .data(features)
