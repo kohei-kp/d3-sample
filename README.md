@@ -9,5 +9,5 @@ D3.jsのサンプル置き場。
  - [手動回転とズーム](http://lisian.github.io/d3-sample/world_map/manual_rotation.html)
 * 遷移
  - [transition](http://lisian.github.io/d3-sample/transition/)
- 
-d3-sample
+* Force Layout
+ - [Twitterでフォローしているアカウントを繋ぐ](http://lisian.github.io/d3-sample/force_layout/)
