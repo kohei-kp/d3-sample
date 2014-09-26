@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    svg {
+      font: 10px sans-serif;
+    }
+
+    .area path {
+      fill: steelblue;
+    }
+
+    .axis path, .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges; 
+    }
+
+    .brush .extent {
+      stroke: #FFF;
+      fill: orange;
+      fill-opacity: .200;
+      shape-rendering: crispEdges;
+    }
+
+    svg {
+      font: 10px sans-serif;
+    }
+
+    .line {
+      fill: none;
+      stroke: #369;
+      stroke-width: 1.5px;
+    }
+  </style>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+  <script src='d3.min.js'></script>
+  <script src='topojson/topojson.js'></script>
+  <script src='helper.js'></script>
+  <title>WF_LOG</title>
+</head>
+
+<body>
+<script src='getLog.js'></script>
+<script src='cld3.js'></script>
+<nav class='navbar navbar-default' role='navigation'>
+  <div class='countainer-fluid'>
+    <div class='navbar-header'>
+      <a class='navbar-brand' href='#'>WF LOG Visulalize</a>
+    </div>
+  </div>
+</nav>
+<div class='test'></div>
+<!-- tab -->
+<ul class='nav nav-tabs' role='tablist'>
+  <li class='active'><a href='#map-tab' role='tab' data-toggle='tab'>Maps</a></li>
+  <li><a href='#login-tab' role='tab' data-toggle='tab'>Weekly Login</a></li>
+  <li><a href='#upload-tab' role='tab' data-toggle='tab'>Upload count</a></li>
+  <li><a href='#realtime-tab' role='tab' data-toggle='tab'>RealTime Chart</a></li>
+</ul>
+
+<!-- tab content -->
+<div class='tab-content'>
+  <!-- 引取地図 -->
+  <div class='tab-pane active' id='map-tab'>
+    <div class="panel panel-info">
+      <div class="panel-heading">Map&nbsp;&nbsp;
+        From:<input type='text' id='from-map'>&nbsp;&nbsp;To:<input type='text' id='to-map'>
+        <button class='btn btn-primary' id='mapping-btn'>Plot</button>
+      </div>
+      <div class="panel-body" id='map'></div>
+    </div>
+  </div>
+  <!-- 週間ログイン -->
+  <div class='tab-pane' id='login-tab'>
+    <div class="panel panel-info">
+      <div class='panel-heading'>Punch Card&nbsp;&nbsp;2014/08/20 ~ 2014/08/26</div>
+      <div class='panel-body' id='login'></div>
+    </div>
+  </div>
+  <!-- アップロード回数 -->
+  <div class='tab-pane' id='upload-tab'>
+    <div class='panel panel-info'>
+      <div class='panel-heading'>
+        From:<input type='text' id='from-upload'>&nbsp;&nbsp;To:<input type='text' id='to-upload'>
+        <button class='btn btn-primary' id='up-graph-btn'>Plot</button><br>
+      </div>
+      <div class='panel-body' id='upload'></div>
+    </div>
+  </div>
+
+  <!-- リアルタイムチャート -->
+  <div class='tab-pane' id='realtime-tab'>
+    <div class='panel panel-info'>
+      <div class='panel-heading'>ReaTime Chart</div>
+      <div class='panel-body' id='realtime'></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
