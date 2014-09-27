@@ -142,60 +142,63 @@ function createPunchCard() {
   var i = 0, len = datas.length, cache, logins,
       cx, cy, r, title;
 
-  for (i = 0; i < len; i += 1) {
-    cache = datas[i];
-    logins = cache[1];
+  circle.selectAll('circle').data(datas).enter().append('circle')
+    .attr({
+      cx: function (d) {
+        return x.step * (d[2] + 1) + 50;
+      },
+      cy: function (d) {
+        return y.step * (d[0]);
+      },
+      r: 0,
+      title: function (d) {
+        return 'Login:' + d[1];
+      },
+      id: function (d) {
+        return d[1];
+      },
+      class: 'hover-circle',
+      fill: '#3A3A3A'
+    })
+    .on('mouseover', function (d) {
+      d3.select(this).attr('fill', 'steelblue');
 
-    if (logins > 0) {
-      cy = y.step * (cache[0]);
-      cx = x.step * (cache[2] + 1) + 50;
-      r = z(logins);
-      title = 'Login:' + logins;
+      var xPos = parseFloat(d3.select(this).attr('cx')) - 40,
+          yPos = parseFloat(d3.select(this).attr('cy')) - 40;
 
-      circle.append('circle')
-        .attr({
-          cx: cx,
-          cy: cy,
-          r: r,
-          id: logins,
-          title: title,
-          class: 'hover-circle',
-          fill: '#3A3A3A'
-        })
-        .on('mouseover', function (d) {
-          d3.select(this).attr('fill', 'steelblue');
+      svg.append('rect')
+      .attr({
+        id: 'tooltip-rect',
+        x: xPos, y: yPos, rx: 6, ry: 6,
+        width: 90, height: 25,
+        fill: '#444444', stroke: '#C3C3C3', 'stroke-width': 1
+      });
 
-          var xPos = parseFloat(d3.select(this).attr('cx')) - 40,
-              yPos = parseFloat(d3.select(this).attr('cy')) - 40;
-
-          svg.append('rect')
-            .attr({
-              id: 'tooltip-rect',
-              x: xPos, y: yPos, rx: 6, ry: 6,
-              width: 90, height: 25,
-              fill: '#444444', stroke: '#C3C3C3', 'stroke-width': 1
-            });
-
-          svg.append('text')
-            .attr({
-              id: 'tooltip',
-              x: xPos + 47,
-              y: yPos + 16,
-              'text-anchor': 'middle',
-              'font-family': 'sans-serif',
-              'font-size': '11px',
-              'font-weight': 'bold',
-              'fill': 'white'
-            })
-            .text(d3.select(this).attr('id') + ' Logins');
-        })
-        .on('mouseout', function () {
-          d3.select(this).attr('fill', '#3A3A3A');
-          d3.select('#tooltip').remove();
-          d3.select('#tooltip-rect').remove();
-        });
-    }
-  }
+      svg.append('text')
+      .attr({
+        id: 'tooltip',
+        x: xPos + 47,
+        y: yPos + 16,
+        'text-anchor': 'middle',
+        'font-family': 'sans-serif',
+        'font-size': '11px',
+        'font-weight': 'bold',
+        'fill': 'white'
+      })
+      .text(d3.select(this).attr('id') + ' Logins');
+    })
+    .on('mouseout', function () {
+      d3.select(this).attr('fill', '#3A3A3A');
+      d3.select('#tooltip').remove();
+      d3.select('#tooltip-rect').remove();
+    })
+    .transition()
+    .duration(700)
+    .attr({
+      r: function (d) {
+        return z(d[1]);
+      }
+    });
 }
 
 function createJapanMap() {
@@ -251,7 +254,7 @@ function createJapanMap() {
         opacity: 0.6
       });
   });
-};
+}
 
 
 /*
