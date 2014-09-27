@@ -113,13 +113,27 @@ function createPunchCard() {
     'font-size': '12px'
   });
 
+  day.selectAll('line').data(days).enter().append('line')
+    .attr({
+      'x1': 0,
+      'x2': width,
+      'y1': function (d) {
+        return y.step * (days.indexOf(d) + 1) + 15;
+      },
+      'y2': function (d) {
+        return y.step * (days.indexOf(d) + 1) + 15;
+      },
+      'fill': 'none',
+      'stroke': '#CBCBCB'
+    });
+
   // yAxis
   hourTxt = hour.selectAll('text').data(hours).enter().append('text');
   hourTxt.attr({
     'x': function (d) {
       return x.step * (hours.indexOf(d) + 1) + 40;
     },
-    'y': y.max + 20
+    'y': y.max + 30
   })
   .text(function (d) { return d; })
   .attr({
@@ -127,6 +141,20 @@ function createPunchCard() {
     'font-size': '12px'
   });
 
+  hour.selectAll('line').data(hours).enter().append('line')
+    .attr({
+      'x1': function (d) {
+        return x.step * (hours.indexOf(d) + 2) + 20;
+      },
+      'x2': function (d) {
+        return x.step * (hours.indexOf(d) + 2) + 20;
+      },
+      'y1': 20,
+      'y2': height - 15,
+      'fill': 'none',
+      'stroke': '#CBCBCB',
+      'stroke-width': 0.5
+    });
 
   var datas = [], scaleData = [];
 
@@ -144,9 +172,7 @@ function createPunchCard() {
 
   circle.selectAll('circle').data(datas).enter().append('circle')
     .attr({
-      cx: function (d) {
-        return x.step * (d[2] + 1) + 50;
-      },
+      cx: 0,
       cy: function (d) {
         return y.step * (d[0]);
       },
@@ -167,25 +193,33 @@ function createPunchCard() {
           yPos = parseFloat(d3.select(this).attr('cy')) - 40;
 
       svg.append('rect')
-      .attr({
-        id: 'tooltip-rect',
-        x: xPos, y: yPos, rx: 6, ry: 6,
-        width: 90, height: 25,
-        fill: '#444444', stroke: '#C3C3C3', 'stroke-width': 1
-      });
+        .attr({
+          'fill': '#444444',
+          stroke: '#999999'
+        })
+        .transition()
+        .duration(300)
+        .attr({
+          id: 'tooltip-rect',
+          x: xPos, y: yPos, rx: 6, ry: 6,
+          width: 90, height: 25,
+          stroke: '#C3C3C3', 'stroke-width': 1
+        });
 
       svg.append('text')
-      .attr({
-        id: 'tooltip',
-        x: xPos + 47,
-        y: yPos + 16,
-        'text-anchor': 'middle',
-        'font-family': 'sans-serif',
-        'font-size': '11px',
-        'font-weight': 'bold',
-        'fill': 'white'
-      })
-      .text(d3.select(this).attr('id') + ' Logins');
+        .attr('fill', 'white')
+        .transition()
+        .duration(300)
+        .attr({
+          id: 'tooltip',
+          x: xPos + 47,
+          y: yPos + 16,
+          'text-anchor': 'middle',
+          'font-family': 'sans-serif',
+          'font-size': '11px',
+          'font-weight': 'bold'
+        })
+        .text(d3.select(this).attr('id') + ' Logins');
     })
     .on('mouseout', function () {
       d3.select(this).attr('fill', '#3A3A3A');
@@ -195,10 +229,14 @@ function createPunchCard() {
     .transition()
     .duration(700)
     .attr({
+      cx: function (d) {
+        return x.step * (d[2] + 1) + 50;
+      },
       r: function (d) {
         return z(d[1]);
       }
     });
+
 }
 
 function createJapanMap() {
