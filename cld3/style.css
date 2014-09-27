@@ -1,0 +1,26 @@
+.area path {
+  fill: steelblue;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges; 
+}
+
+.brush .extent {
+  stroke: #FFF;
+  fill: orange;
+  fill-opacity: .200;
+  shape-rendering: crispEdges;
+}
+
+svg {
+  font: 10px sans-serif;
+}
+
+.line {
+  fill: none;
+  stroke: #369;
+  stroke-width: 1.5px;
+}
