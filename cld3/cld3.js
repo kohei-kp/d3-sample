@@ -5,9 +5,17 @@ var util = new LOG_VISUALIZE.Util(),
     //datas = [],
     map, projection;
 
+// 週間ログイン バブルチャート
 createPunchCard();
+
+// 地図の描画
 createJapanMap();
+
+// 面グラフ
 createAreaGraph();
+
+// リアルタイムチャート
+createRealTimeChart();
 
 // Weekly Login Chart
 function createPunchCard() {
@@ -372,107 +380,109 @@ function createAreaGraph() {
     }
   });
 }
-//
+
 /**-----------------------------------------
  * realTIme test
  * -----------------------------------------*/
-/*
-db.getHourUpSize()
-.done(function (data) {
-  var n = 100, duration = 700, count = 0;
-  var parseDate = d3.time.format('%Y-%m-%d %H').parse;
-
-  // データ変換
-  data.forEach(function (d) {
-    d.date = parseDate(d.date);
-    d.count = parseInt(d.count);
-    d.up_size = parseInt(d.up_size) / 1000000;
-  });
-  var now = data[0].date;
-  var data2 = [];
-  var len = data.length;
-  for(var i = 0; i < n; i += 1) {
-    data2[i] = data[i];
-  }
-
+function createRealTimeChart() {
   var margin = { top: 6, right: 0, bottom: 20, left: 0 },
       width = 960 - margin.left - margin.right,
       height = 300 - margin.top - margin.bottom;
 
-  var xScale = d3.time.scale()
-    .domain([now - (n - 2) * duration, data[n + count].date - duration])
-    .range([0, width]);
-
-  var yScale = d3.scale.linear()
-    .range([height, 0]);
-
-  var line = d3.svg.line()
-    .interpolate('basis')
-    .x(function (d, i) { return xScale(d.date); })
-    .y(function (d, i) { return yScale(d.up_size); });
-
-  var svg = d3.select('#realtime').append('svg')
-    .attr({
-      'width': width + margin.left + margin.right,
-      'height': height + margin.top + margin.bottom
-    })
-    .append('g')
+  // svg
+  var svg = util.createSVG('#realtime', width, height);
+  svg.append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-  svg.append('defs').append('clipPath')
-    .attr('id', 'crip')
-    .append('rect')
-    .attr({
-      'width': width,
-      'height': height
+  // データ取得
+  db.getUploadList().done(function (data) {
+    var n = 5, duration = 700, count = 0,
+        parseDate = d3.time.format('%Y-%m-%d %H').parse,
+        dataset = data.size,
+        now, datas = [], i, len,
+        line, axis, path,
+        // Scale
+        xScale, yScale;
+
+    // データ変換
+    dataset.forEach(function (d) {
+      d.date = parseDate(d.date);
+      d.count = parseInt(d.count);
+      d.up_size = parseInt(d.up_size) / 1000000;
     });
 
-  var axis = svg.append('g')
-    .attr({
-      'class': 'x axis',
-      'transform': 'translate(0,' + height + ')'
-    })
-    .call(xScale.axis = d3.svg.axis().scale(xScale).orient('bottom'));
+    now = dataset[0].date;
+    len = dataset.length;
 
-  var path = svg.append('g')
-    .attr('clip-path', 'url(#clip)')
-    .append('path')
-    .data([data2])
-    .attr('class', 'line');
-
-  count += 1;
-  tick();
-
-  function tick() {
-    now = data[count].date;
-
-    xScale.domain([now - (n - 2) * duration, data2[n - 1].date]);
-    yScale.domain(d3.extent(data2, function(d) { return d.up_size; }));
-
-    data2.push(data[n + count]);
-    svg.select('.line')
-      .attr({
-        'd': line,
-        'transform': null
-      });
-
-    axis.transition()
-      .duration(duration)
-      .ease('linear')
-      .call(xScale.axis);
-
-    path.transition()
-      .duration(duration)
-      .ease('linear')
-      .attr('transform', 'translate(' + xScale(now - (n - 1) * duration) + ')')
-      .each('end', tick);
-
-    data2.shift();
-
-    if (n + count == len - 1) {
-      count = 0;
-    } else {
-      ++count;
+    for(i = 0; i < n; i += 1) {
+      datas[i] = dataset[i];
     }
-  }
-});*/
+
+    // Scale
+    xScale = d3.time.scale()
+      .domain([now - (n - 2) * duration, dataset[n + count].date - duration])
+      .range([0, width]);
+    yScale = d3.scale.linear().range([height, 0]);
+
+    // line
+    line = d3.svg.line()
+      .interpolate('basis')
+      .x(function (d, i) { return xScale(d.date); })
+      .y(function (d, i) { return yScale(d.up_size); });
+
+    svg.append('defs').append('clipPath')
+      .attr('id', 'clip')
+      .append('rect')
+      .attr({ width: width, height: height });
+
+    // 軸
+    axis = svg.append('g')
+      .attr({
+        class: 'x axis',
+        transform: 'translate(0,' + height + ')'
+      })
+      .call(xScale.axis = d3.svg.axis().scale(xScale).orient('bottom'));
+
+    path = svg.append('g')
+      .attr('clip-path', 'url(#clip)')
+      .data(datas)
+      .attr('class', 'line');
+
+    count += 1;
+    tick();
+
+    function tick() {
+      now = dataset[count].date;
+
+      xScale.domain([now - (n - 2) * duration, datas[n - 1].date]);
+      yScale.domain(d3.extent(datas.map(F('up_size'))));
+
+      datas.push(dataset[n + count]);
+
+      svg.select('.line')
+        .attr({
+          d: line,
+          transform: null
+        });
+
+      axis.transition()
+        .duration(duration)
+        .ease('linear')
+        .call(xScale.axis);
+
+      path.transition()
+        .duration(duration)
+        .ease('linear')
+        .attr('transform', 'translate(' + xScale(now - (n - 1) * duration) + ')')
+        .each('end', tick);
+
+      datas.shift();
+
+      if (n + count == len - 1) {
+        count = 0;
+      } else {
+        ++count;
+      }
+    }
+  });
+}
