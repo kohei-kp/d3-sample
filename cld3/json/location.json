@@ -1,0 +1,13 @@
+{
+  "location": [
+    { "Prefecture": "Kobe" , "lon": "135.195", "lat": "34.690" },
+    { "Prefecture": "Tokyo" , "lon": "139.691", "lat": "35.089" },
+    { "Prefecture": "Hokkaido" , "lon": "141.346", "lat": "43.064" },
+    { "Prefecture": "Fukuoka" , "lon": "130.407", "lat": "33.590" },
+    { "Prefecture": "Tokushima" , "lon": "134.559", "lat": "34.065" },
+    { "Prefecture": "Osaka" , "lon": "135.502", "lat": "34.693" },
+    { "Prefecture": "Nigata" , "lon": "139.036", "lat": "37.916" },
+    { "Prefecture": "Iwate" , "lon": "139.036", "lat": "37.916" }
+  ]
+}
+
