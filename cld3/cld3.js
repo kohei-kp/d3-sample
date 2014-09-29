@@ -385,104 +385,96 @@ function createAreaGraph() {
  * realTIme test
  * -----------------------------------------*/
 function createRealTimeChart() {
-  var margin = { top: 6, right: 0, bottom: 20, left: 0 },
-      width = 960 - margin.left - margin.right,
-      height = 300 - margin.top - margin.bottom;
+  var n = 243, duration = 750,
 
-  // svg
-  var svg = util.createSVG('#realtime', width, height);
-  svg.append('g')
+      // 時間
+      now = new Date(Date.now() - duration),
+      data = d3.range(n).map(function () { return 0; }),
+
+      // SVG
+      margin = { top: 6, right: 10, bottom: 20, left: 0 },
+      width = 960 - margin.right,
+      height = 300 - margin.top - margin.bottom,
+      svg,
+
+      // Scale
+      x = d3.time.scale()
+        .domain([now - (n - 2) * duration, now - duration])
+        .range([0, width]),
+
+      y = d3.scale.linear()
+        .range([height, 0]),
+
+      line, axis, path;
+
+  // createSVG
+  svg = util.createSVG('#realtime',
+    width + margin.left + margin.right,
+    height + margin.top + margin.bottom
+  );
+  svg.style('margin-left', -margin.left + 'px')
+    .append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-  // データ取得
-  db.getUploadList().done(function (data) {
-    var n = 5, duration = 700, count = 0,
-        parseDate = d3.time.format('%Y-%m-%d %H').parse,
-        dataset = data.size,
-        now, datas = [], i, len,
-        line, axis, path,
-        // Scale
-        xScale, yScale;
-
-    // データ変換
-    dataset.forEach(function (d) {
-      d.date = parseDate(d.date);
-      d.count = parseInt(d.count);
-      d.up_size = parseInt(d.up_size) / 1000000;
+  svg.append('defs').append('clipPath')
+    .attr('id', 'clip')
+    .append('rect')
+    .attr({
+      width: width,
+      height: height
     });
 
-    now = dataset[0].date;
-    len = dataset.length;
+  // line
+  line = d3.svg.line()
+    .interpolate('basis')
+    .x(function (d, i) { return x(now - (n - 1 - i) * duration); })
+    .y(function (d, i) { return y(d); });
 
-    for(i = 0; i < n; i += 1) {
-      datas[i] = dataset[i];
-    }
+  // axis
+  axis = svg.append('g')
+    .attr({
+      class: 'x axis',
+      transform: 'translate(0,' + height + ')'
+    })
+    .call(x.axis = d3.svg.axis().scale(x).orient('bottom'));
 
-    // Scale
-    xScale = d3.time.scale()
-      .domain([now - (n - 2) * duration, dataset[n + count].date - duration])
-      .range([0, width]);
-    yScale = d3.scale.linear().range([height, 0]);
+  path = svg.append('g')
+    .attr('clip-path', 'url(#clip)')
+    .append('path')
+    .data([data])
+    .attr('class', 'line');
 
-    // line
-    line = d3.svg.line()
-      .interpolate('basis')
-      .x(function (d, i) { return xScale(d.date); })
-      .y(function (d, i) { return yScale(d.up_size); });
+  tick();
 
-    svg.append('defs').append('clipPath')
-      .attr('id', 'clip')
-      .append('rect')
-      .attr({ width: width, height: height });
+  function tick() {
+    // update the domains
+    now = new Date();
+    x.domain([now - (n - 2) * duration, now - duration]);
+    y.domain([0, d3.max(data)]);
 
-    // 軸
-    axis = svg.append('g')
+    // path
+    data.push(Math.random() * 2000000);
+
+    svg.select('.line')
       .attr({
-        class: 'x axis',
-        transform: 'translate(0,' + height + ')'
-      })
-      .call(xScale.axis = d3.svg.axis().scale(xScale).orient('bottom'));
+        d: line,
+        transform: null
+      });
 
-    path = svg.append('g')
-      .attr('clip-path', 'url(#clip)')
-      .data(datas)
-      .attr('class', 'line');
+    // slide x-axis
+    axis.transition()
+      .duration(duration)
+      .ease('linear')
+      .call(x.axis);
 
-    count += 1;
-    tick();
+    // slide line
+    path.transition()
+      .duration(duration)
+      .ease('linear')
+      .attr('transform', 'translate(' + x(now - (n - 1) * duration) + ')')
+      .each('end', tick);
 
-    function tick() {
-      now = dataset[count].date;
-
-      xScale.domain([now - (n - 2) * duration, datas[n - 1].date]);
-      yScale.domain(d3.extent(datas.map(F('up_size'))));
-
-      datas.push(dataset[n + count]);
-
-      svg.select('.line')
-        .attr({
-          d: line,
-          transform: null
-        });
-
-      axis.transition()
-        .duration(duration)
-        .ease('linear')
-        .call(xScale.axis);
-
-      path.transition()
-        .duration(duration)
-        .ease('linear')
-        .attr('transform', 'translate(' + xScale(now - (n - 1) * duration) + ')')
-        .each('end', tick);
-
-      datas.shift();
-
-      if (n + count == len - 1) {
-        count = 0;
-      } else {
-        ++count;
-      }
-    }
-  });
+    // shift
+    data.shift();
+  }
 }
