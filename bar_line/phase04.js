@@ -19,8 +19,8 @@ var xLine, yLineL, yLineR;
 
 var xLabelList = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-// var URL = "./data.json";
-var URL = "http://10.211.55.4/wf-log/log/download2";
+var URL = "./data.json";
+//var URL = "http://10.211.55.4/wf-log/log/download2";
 
 
 $(document).ready(function() {
