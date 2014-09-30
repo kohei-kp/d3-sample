@@ -485,7 +485,11 @@ function createRealTimeChart() {
  * Bar Line Chart
  *---------------------------------------*/
 function createBarLine() {
-  var width = 800, height = 500,
+  var margin = { top: 10, right: 10, bottom: 100, left: 40 },
+      width = 800 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom,
+
+      offsetX = 50, offsetY = 30, barMargin = 15,
 
       svg, bar, line, 
 
@@ -499,16 +503,76 @@ function createBarLine() {
       labelList = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Set'];
 
   // svg生成
-  svg = util.createSVG('#bar-line', width, height);
+  svg = util.createSVG('#bar-line', width + 10, height + 10);
 
   // データ取得
+  db.getWeekUp1().done(function (data) {
+    var dataset = data.week_up,
+        // Size
+        maxSize, xScale, yScaleSize, colorSize,
+        // Cnt
+        maxCnt, yScaleCnt;
 
-  xScale = d3.time.scale().range([0, width]);
-  yScale = d3.scale.linear().range([height, 0]);
+    maxSize = d3.max(dataset.map(F('size')));
+    
+    xScale = d3.scale.linear().domain([1, 7])
+      .range([offsetX, 80 - offsetX]);
 
-  xAxis = d3.svg.axis().scale(xScale).orient('bottom');
-  yAxis = d3.svg.axis().scale(yScale).orient('left');
-  y2Axis = d3.svg.axis().scale(y2Scale).orient('right');
+    // bar chart scale
+    yScaleSize = d3.scale.linear()
+      .domain([0, maxSize])
+      .range([height - offsetY, offsetY]);
 
+    // color scale
+    //colorSize = d3.scale.linear()
+    //  .domain([0, maxSize])
+    //  .range(['#EEEEFF', '#0000FF']);
 
+    // cnt
+    maxCnt = d3.max(dataset.map(F('cnt')));
+
+    // line chart
+    yScaleCnt = d3.scale.linear()
+      .domain([0, maxCnt])
+      .range([height - offsetY, offsetY]);
+
+    xAxis = d3.svg.axis().scale(xScale).orient('bottom');
+    yAxis = d3.svg.axis().scale(yScaleSize).orient('right');
+    y2Axis = d3.svg.axis().scale(yScaleCnt).orient('left');
+
+    svg.append('g')
+      .attr('class', 'x axis')
+      .attr('transform', 'translate(0,' + height + ')')
+      .call(xAxis);
+
+    svg.append('g')
+      .attr('transform', 'translate(' + 10 + ', 0)')
+      .attr('class', 'y axis')
+      .call(yAxis);
+
+    svg.append('g')
+      .attr('class', 'y axis')
+      .attr('transform', 'translate(' + (width - 10) + ', 0)')
+      .call(y2Axis);
+
+    var xPos = function (i) { return i * (50 + 15) + offsetX; };
+
+    // draw chart
+    bar = svg.selectAll('rect').data(dataset).enter()
+      .append('rect')
+      .attr({
+        x: function (d, i) { return xPos(d.week); },
+        y: function (d, i) { return height - offsetY; },
+        width: 50,
+        height: 0,
+        fill: '#88BBFF'
+      })
+      .transition().duration(1000)
+      .attr({
+        y: function (d, i) { return yScaleSize(d.size); },
+        height: function (d, i) { return height - yScaleSize(d.size) - offsetY; }
+      });
+
+    console.log(dataset);
+  });
 }

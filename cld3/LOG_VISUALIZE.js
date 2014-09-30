@@ -77,6 +77,30 @@ var LOG_VISUALISE = LOG_VISUALISE || {};
         datatype: 'JSON',
         url: 'json/area.json'
       });
+    },
+
+    /**
+     * @method getWeekUp1 (example)
+     * @return {object}
+     */
+    getWeekUp1: function () {
+      return $.ajax({
+        type: 'GET',
+        datatype: 'JSON',
+        url: 'json/week-up.json'
+      });
+    },
+
+    /**
+     * @method getWeekUp2 (example)
+     * @return {object}
+     */
+    getWeekUp2: function () {
+      return $.ajax({
+        type: 'GET',
+        datatype: 'JSON',
+        url: 'json/week-up2.json'
+      });
     }
 
   };
