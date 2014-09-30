@@ -478,3 +478,10 @@ function createRealTimeChart() {
     data.shift();
   }
 }
+
+/**--------------------------------------*
+ * Bar Line Chart
+ *---------------------------------------*/
+function createBarLine() {
+
+}
