@@ -17,6 +17,8 @@ createAreaGraph();
 // リアルタイムチャート
 createRealTimeChart();
 
+createBarLine();
+
 // Weekly Login Chart
 function createPunchCard() {
   var width = 800, height = 400, padding = 80;
@@ -483,5 +485,30 @@ function createRealTimeChart() {
  * Bar Line Chart
  *---------------------------------------*/
 function createBarLine() {
+  var width = 800, height = 500,
+
+      svg, bar, line, 
+
+      // 軸
+      xAxis, yAxis, yAxis2,
+
+      // スケール
+      xScale, yScale, y2Scale,
+
+      // label
+      labelList = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Set'];
+
+  // svg生成
+  svg = util.createSVG('#bar-line', width, height);
+
+  // データ取得
+
+  xScale = d3.time.scale().range([0, width]);
+  yScale = d3.scale.linear().range([height, 0]);
+
+  xAxis = d3.svg.axis().scale(xScale).orient('bottom');
+  yAxis = d3.svg.axis().scale(yScale).orient('left');
+  y2Axis = d3.svg.axis().scale(y2Scale).orient('right');
+
 
 }

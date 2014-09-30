@@ -1,0 +1,11 @@
+{
+  "week_up": [
+    {"week": 1,"cnt": 50,  "size": 3500 },
+    {"week": 2,"cnt": 100, "size": 2400 },
+    {"week": 3,"cnt": 500, "size": 3100 },
+    {"week": 4,"cnt": 200, "size": 3500 },
+    {"week": 5,"cnt": 250, "size": 4100 },
+    {"week": 6,"cnt": 600, "size": 2500 },
+    {"week": 7,"cnt": 200, "size": 1700 }
+  ]
+}
