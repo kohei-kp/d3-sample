@@ -14,6 +14,9 @@
 
       parseDate = d3.time.format('%Y-%m-%d').parse;
 
+  init();
+  draw();
+
   function init() {
     // svg生成
     svg = util.createSVG('#bar-line',
