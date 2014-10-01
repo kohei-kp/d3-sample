@@ -101,7 +101,12 @@
         .text('Upload Size /MB');
 
       createBar(dataset);
-      createLine(dataset);
+      svg.append('path')
+        .datum(dataset)
+        .attr({
+          class: 'line',
+          d: line
+      });
     });
   }
 
@@ -147,12 +152,4 @@
       });
   }
 
-  function createLine(dataset) {
-    svg.append('path')
-    .datum(dataset)
-    .attr({
-      class: 'line',
-      d: line
-    });
-  }
 }());
