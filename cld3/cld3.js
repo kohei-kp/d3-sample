@@ -607,8 +607,8 @@ function createBarLine() {
           .duration(300)
           .attr({
             id: 'tooltip',
-            x: xPos,
-            y: yPos + 20,
+            x: xPos 47,
+            y: yPos + 16,
             'text-anchor': 'middle',
             'font-family': 'sans-serif',
             'font-size': '11px',
