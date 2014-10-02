@@ -34,9 +34,9 @@
   }
 
   function drawAreaGraph() {
-    db.getArea().done(function (data) {
-      var dataset = data.area;
-
+    db.getLogUploadAll().done(function (data) {
+      //var dataset = data.area;
+      var dataset = data;
         // データの型変換
         dataset.forEach(function (d) {
           d.date = parseDate(d.date);
@@ -45,7 +45,7 @@
         });
 
       dateExtent = d3.extent(dataset.map(F('date'))); // dateの最小値、最大値
-      countMax = d3.max(dataset.map(F('up_size'))); // upload回数の最大値
+      countMax = d3.max(dataset.map(F('count'))); // upload回数の最大値
 
       xScale = d3.time.scale().domain(dateExtent).range([0, w]);
       yScale = d3.scale.linear().domain([0, countMax]).range([h, 0]);
@@ -62,14 +62,14 @@
         .interpolate('monotone')
         .x(F('date', xScale))
         .y0(h)
-        .y1(F('up_size', yScale));
+        .y1(F('count', yScale));
 
       // 下位グラフarea
       area2 = d3.svg.area()
         .interpolate('monotone')
         .x(F('date', x2Scale))
         .y0(h2)
-        .y1(F('up_size', y2Scale));
+        .y1(F('count', y2Scale));
 
       // フォーカス時の上位グラフの表示位置調整 クリックパス作成
       svg.append('defs').append('clipPath')

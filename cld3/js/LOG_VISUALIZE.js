@@ -27,7 +27,10 @@ var LOG_VISUALISE = LOG_VISUALISE || {};
    * @namespace LOG_VISUALIZE
    * @class DatabaseAccess
    */
-  var DatabaseAccess = function () {};
+  var DatabaseAccess = function () {
+    this.APP_URL = 'http://cld3-api.145.kp/';
+    this.APP_PATH = 'wflog/';
+  };
 
   DatabaseAccess.prototype = {
     
@@ -47,11 +50,26 @@ var LOG_VISUALISE = LOG_VISUALISE || {};
      * @method getLocationList
      * @return {object}
      */
-    getLocationList: function () {
+    getLocationList: function (from, to) {
       return $.ajax({
         type: 'GET',
         datatype: 'JSON',
-        url: 'json/location.json'
+        //url: 'json/location.json'
+        url: this.APP_URL + this.APP_PATH + 'upip',
+        data: { from: from, to: to }
+      });
+    },
+
+    /**
+     * @method getLocation
+     * @return {object}
+     */
+    getLonLat: function (ip) {
+      return $.ajax({
+        dataType: 'JSON',
+        url: 'http://cld3.145.kp/geoip/index.php',
+        type: 'POST',
+        data: { 'ip': ip }
       });
     },
 
@@ -59,11 +77,38 @@ var LOG_VISUALISE = LOG_VISUALISE || {};
      * @method getUploadList
      * @return {object}
      */
-    getUploadList: function () {
+    getUploadList: function (from, to) {
       return $.ajax({
         type: 'GET',
         datatype: 'JSON',
-        url: 'json/upload.json'
+        url: this.APP_URL + this.APP_PATH + 'countupsize',
+        //url: 'json/upload.json'
+        data: {from: from, to: to}
+      });
+    },
+
+    /**
+     * @method getLogUploadAll
+     * @return {object}
+     */
+    getLogUploadAll: function () {
+      return $.ajax({
+        dataType: 'JSON',
+        url: this.APP_URL + this.APP_PATH + 'hourupsize',
+        type: 'GET'
+      });
+    },
+
+    /**
+     * @method getCountUpSize
+     * @return {object}
+     */
+    getCountUpSize: function (from, to) {
+      return $.ajax({
+        dataType: 'JSON',
+        url: this.APP_URL + this.APP_PATH + 'countupsize',
+        data: { from: from, to: to },
+        type: 'GET'
       });
     },
 
@@ -76,30 +121,6 @@ var LOG_VISUALISE = LOG_VISUALISE || {};
         type: 'GET',
         datatype: 'JSON',
         url: 'json/area.json'
-      });
-    },
-
-    /**
-     * @method getWeekUp1 (example)
-     * @return {object}
-     */
-    getWeekUp1: function () {
-      return $.ajax({
-        type: 'GET',
-        datatype: 'JSON',
-        url: 'json/week-up.json'
-      });
-    },
-
-    /**
-     * @method getWeekUp2 (example)
-     * @return {object}
-     */
-    getWeekUp2: function () {
-      return $.ajax({
-        type: 'GET',
-        datatype: 'JSON',
-        url: 'json/week-up2.json'
       });
     }
 

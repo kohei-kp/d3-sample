@@ -30,8 +30,11 @@
 
   function draw() {
     // データ取得
-    db.getArea().done(function (data) {
-      var dataset = data.area, line;
+   // db.getArea().done(function (data) {
+    db.getCountUpSize('20140101', '20140826').done(function (data) {
+      var dataset = data,
+          //dataset = data.area, 
+          line;
 
       dataset.forEach(function (d) {
         d.date = parseDate(d.date);
