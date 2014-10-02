@@ -1,7 +1,7 @@
 // bar and line chart
 (function () {
   var margin = { top: 30, right: 20, bottom: 30, left: 50 },
-      width = 960 - margin.left - margin.right,
+      width = 1000 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom,
  
       svg, bar, line,
@@ -80,7 +80,7 @@
 
       svg.append('g')
         .attr('class', 'y axis')
-        .attr('transform', 'translate(' + width + ', 0)')
+        .attr('transform', 'translate(' + (width + 5) + ', 0)')
         .call(yAxis)
         .append('text')
         .attr({
@@ -121,7 +121,7 @@
         class: 'bar',
         id: function (d) { return d.up_size },
         x: function (d) { return xScale(d.date); },
-        width: 10,
+        width: 8,
         y: function (d) { return y2Scale(d.up_size); },
         height: function (d) { return height - y2Scale(d.up_size); },
         fill: '#CCF',

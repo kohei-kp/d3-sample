@@ -1,3 +1,4 @@
 .DS_Store
 cld3/api/
 cld3/geoip/
+*.log
