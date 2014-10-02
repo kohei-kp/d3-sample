@@ -28,7 +28,7 @@
           fill: '#669966'
         });
 
-      drawLocation();
+      //drawLocation();
     });
   }
 
@@ -45,7 +45,7 @@
           data[i].city = data2[i].city_en ? data2[i].city_en : 'JP';
           data[i].lon = data2[i].lon;
           data[i].lat = data2[i].lat;
-          data[i].action = data[i].history_id == '1' ? 'アップロード' : '引取';
+          data[i].action = data[i].history_id == '1' ? 'アップロード' : '配布ファイルのダウンロード';
         }
         circle = svg.selectAll('circle').data(data).enter().append('circle')
           .attr({
@@ -59,12 +59,12 @@
             fill: function (d) { 
               return d.history_id == '1' ? 'blue' : 'red';
             },
-            opacity: 1
+            opacity: 0
           })
           .transition(700)
           .attr({
             r: 5,
-            opacity: 0.6
+            opacity: 0.8
           });
 
         createTable(data);
@@ -84,5 +84,9 @@
     }
     $('#action-table').append(table);
   }
+
+  d3.select('#location-plot').on('click', function () {
+    drawLocation();
+  });
 
 }());

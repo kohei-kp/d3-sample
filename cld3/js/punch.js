@@ -87,7 +87,7 @@
         'stroke': '#CBCBCB',
         'stroke-width': 0.5
       });
-    drawPunchCard(0)
+    drawPunchCard(0);
   }
 
   // 描画

@@ -15,7 +15,7 @@
       parseDate = d3.time.format('%Y-%m-%d').parse;
 
   init();
-  draw();
+  //draw();
 
   function init() {
     // svg生成
@@ -106,6 +106,8 @@
       createBar(dataset);
       svg.append('path')
         .datum(dataset)
+        .transition()
+        .duration(800)
         .attr({
           class: 'line',
           d: line
@@ -122,14 +124,14 @@
         id: function (d) { return d.up_size },
         x: function (d) { return xScale(d.date); },
         width: 8,
-        y: function (d) { return y2Scale(d.up_size); },
-        height: function (d) { return height - y2Scale(d.up_size); },
-        fill: '#CCF',
+        y: height, //function (d) { return y2Scale(d.up_size); },
+        height: 0,//function (d) { return height - y2Scale(d.up_size); },
+        fill: '#BCBCFF',
         'stroke': 'white',
         'stroke-width' : 1
       })
       .on('mouseover', function (d) {
-        d3.select(this).attr('fill', '#B0B0FF');
+        d3.select(this).attr('fill', '#55F');
 
         var xPos = parseFloat(d3.select(this).attr('x')),
             yPos = parseFloat(d3.select(this).attr('y'))
@@ -152,7 +154,15 @@
       .on('mouseout', function () {
         d3.select(this).attr('fill', '#CCF');
         d3.select('#tooltip').remove();
-      });
+      })
+      .transition()
+      .duration(800)
+      .attr('y', function (d) { return y2Scale(d.up_size); })
+      .attr('height', function (d) { return height - y2Scale(d.up_size); });
   }
+
+  d3.select('#barline-plot').on('click', function () {
+    draw();
+  });
 
 }());
