@@ -20,7 +20,33 @@ var LOG_VISUALISE = LOG_VISUALISE || {};
       var svg = d3.select(select).append('svg').attr({ width: w, height: h });
 
       return svg;
+    },
+
+    addDate: function (d) {
+      var date = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7);
+      date = date.getFullYear() + '/' + this.pad(date.getMonth() + 1) + '/' + this.pad(date.getDate());
+      return date;
+    },
+
+    subDate: function (d) {
+      var date = new Date(d.getFullYear(), d.getMonth(), d.getDate() - 7);
+      date = date.getFullYear() + '/' + this.pad(date.getMonth() + 1) + '/' + this.pad(date.getDate());
+      return date;
+    },
+
+    changeDateFormat: function (d) {
+      var date = d.getFullYear() + '/' + this.pad(d.getMonth() + 1) + '/' + this.pad(d.getDate());
+      return date;
+    },
+
+    pad: function (d) {
+      d = d.toString();
+      if (d.length == 1) {
+        return '0' + d;
+      }
+      return d;
     }
+
   };
 
   /**
@@ -38,11 +64,13 @@ var LOG_VISUALISE = LOG_VISUALISE || {};
      * @method getLoginList
      * @return {object}
      */
-    getLoginList: function () {
+    getLoginList: function (from, to) {
       return $.ajax({
         type: 'GET',
         datatype: 'JSON',
-        url: 'json/login.json'
+        url: this.APP_URL + this.APP_PATH + '/hourlogin',
+        //url: 'json/login.json'
+        data: { from: from, to: to }
       });
     },
 

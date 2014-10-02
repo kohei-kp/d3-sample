@@ -24,6 +24,8 @@
 
   var dayAxis, hourAxis;
 
+  var from = '2014/08/20', to = '2014/08/26';
+
   init();
   drawPunchCard();
 
@@ -85,13 +87,16 @@
         'stroke': '#CBCBCB',
         'stroke-width': 0.5
       });
+    drawPunchCard()
   }
 
   // 描画
   function drawPunchCard() {
+    var f = from.replace(/\//g, ''), t = to.replace(/\//g, '');
     // ログインリストの取得
-    db.getLoginList().done(function (data) {
-      var dataset = data.weeklogin,
+    db.getLoginList(f ,t).done(function (data) {
+      var dataset = data,
+      //var dataset = data.weeklogin,
           scaleData = [];
 
       var domain, z, cx, cy, r, title;
@@ -110,7 +115,7 @@
         .attr({
           cx: 0,
           cy: function (d) {
-            return y.step * (d[0]);
+            return y.step * (d[0] + 1);
           },
           r: 0,
           title: function (d) {
@@ -174,4 +179,30 @@
       });
     });
   }
+    function removeCircle() {
+      circle.remove();
+      circle = svg.append('g');
+    }
+
+    d3.select('#backword').on('click', function () {
+      var f = new Date(from), t = new Date(to);
+      removeCircle();
+
+      from = util.subDate(f);
+      to = util.subDate(t);
+      
+      drawPunchCard();
+      d3.select('#term').text(from + '　〜　' + to);
+    });
+
+    d3.select('#forword').on('click', function () {
+      var f = new Date(from), t = new Date(to);
+      removeCircle();
+
+      from = util.addDate(f);
+      to = util.addDate(t);
+
+      drawPunchCard();
+      d3.select('#term').text(from + '　〜　' + to);
+    });
 }());
