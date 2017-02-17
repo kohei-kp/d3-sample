@@ -2,6 +2,10 @@ d3-sample
 =========
 D3.jsのサンプル置き場。  
 
+V4
+* test
+
+旧バージョン
 * 日本地図
  - [日本地図と棒グラフ](http://kohei-kp.github.io/d3-sample/japan_map/)
 * 世界地図(地球儀)
